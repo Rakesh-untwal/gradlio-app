@@ -1,0 +1,1 @@
+print("Globals initializing...")
