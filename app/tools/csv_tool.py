@@ -1,11 +1,42 @@
 from typing import Dict, Any, Callable, List
 import pandas as pd
 import matplotlib.pyplot as plt
+import sys
+import io
 
-from pydantic_ai import RunContext
+from pydantic_ai import RunContext, ModelRetry
 
 from app.globals.data import csv_data
 from app.dependencies.csv_agent_supported_deps import CsvAgentSupportDependencies
+
+def execute_python_code(ctx: RunContext[CsvAgentSupportDependencies], code: str) -> str:
+    try:
+        df = pd.read_csv(ctx.deps.csv_path)
+        exec_globals = {"pd": pd, "plt": plt, "df": df, "result": None}
+
+        # Capture stdout
+        old_stdout, old_stderr = sys.stdout, sys.stderr
+        sys.stdout, sys.stderr = io.StringIO(), io.StringIO()
+
+        try:
+            print(f"Executing Code:\n{code}\n")  # This will be captured
+            exec(code, exec_globals)
+        finally:
+            output = sys.stdout.getvalue().strip()
+            error_output = sys.stderr.getvalue().strip()
+            sys.stdout, sys.stderr = old_stdout, old_stderr  # Restore original stdout/stderr
+
+        result = exec_globals.get("result", None)
+
+        # If no explicit result, return console output instead
+        if result is None:
+            return {"analysis_result": output or error_output or "No result or output generated. Please check the code and retry."}
+        return {"analysis_result": result}
+
+    except Exception as e:
+        print(f"Error during execution: {str(e)}")
+        # raise ModelRetry(f"An error occurred: {str(e)}. Please correct the code and retry.")
+        raise ModelRetry(f"Error executing Python code:: {str(e)}. Please correct the code and retry.")
 
 
 def get_csv_columns(ctx: RunContext[CsvAgentSupportDependencies])->list[str] | str:

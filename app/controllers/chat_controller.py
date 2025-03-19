@@ -31,14 +31,14 @@ class ChatController:
             if text and files:
                 ChatController.file_path = files[0]
                 CsvService.upload_csv(files[0])
-                if "plot" in text.lower() or "graph" in text.lower():
+                if "plot" in text.lower() or "graph" in text.lower() or "visualize" in text.lower() or "show" in text.lower() or "display" in text.lower() or "draw" in text.lower() or "chart" in text.lower() or "image" in text.lower(): 
                     result = data_visualization_agent.run_sync(text,deps = VisualizationAgentDeps(files[0],image_path=image_path))
                     if os.path.exists(image_path):
                         return gr.Image(value=image_path)
                     else:
                         return "Unable to generate the image. Please try again."
                 else:
-                    result = agent.run_sync(text,deps=CsvAgentSupportDependencies(csv_service= csv_service))
+                    result = agent.run_sync(text,deps=CsvAgentSupportDependencies(csv_service= csv_service,csv_path=ChatController.file_path))
                     print(result.all_messages())
             elif files:
                 ChatController.file_path = files[0]
@@ -54,7 +54,7 @@ class ChatController:
                     else:
                         return "Unable to generate the image. Please try again."
                 else:
-                    result = agent.run_sync(text,deps=CsvAgentSupportDependencies(csv_service= csv_service))
+                    result = agent.run_sync(text,deps=CsvAgentSupportDependencies(csv_service= csv_service,csv_path=ChatController.file_path))
                     # print(result.all_messages())
             else:
                 return "Please ask anything to continue."

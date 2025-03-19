@@ -5,3 +5,4 @@ from app.services.visualization_service import VisualizationService
 @dataclass
 class CsvAgentSupportDependencies:
     csv_service : CsvService
+    csv_path : str
