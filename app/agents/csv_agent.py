@@ -49,15 +49,15 @@ agent = Agent(ollama_model,
               system_prompt=system_prompt,
               deps_type= CsvAgentSupportDependencies,
               tools=[
-                  Tool(execute_python_code)
+                  Tool(execute_python_code, max_retries=5)
                   ],
               result_type=Union[
                   int,
                   str,
-                  List[str],
-                  List[Dict],
-                  CsvDataQueryResult,
-                  CsvDataInvalidQueryResult
+                  # List[str],
+                  # List[Dict],
+                  # CsvDataQueryResult,
+                  # CsvDataInvalidQueryResult
                   ],
               retries= 5,
               model_settings= ModelSettings(

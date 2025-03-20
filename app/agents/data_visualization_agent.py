@@ -21,7 +21,7 @@ data_visualization_agent = Agent(
                                   deps_type=VisualizationAgentDeps,
                                   result_retries=5,
                                   tools=[
-                                      Tool(execute_python_code)
+                                      Tool(execute_python_code,max_retries=5)
                                   ],
                                   result_type=str,
                                   model_settings= ModelSettings(
