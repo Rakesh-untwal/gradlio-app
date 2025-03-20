@@ -10,15 +10,15 @@ from app.tools.csv_tool import get_unique_values,group_by_aggregate,get_column_s
 from app.dependencies.csv_agent_supported_deps import CsvAgentSupportDependencies
 
 system_prompt = """
-Do not return code instead return final result
 You are an expert data analyst proficient in Python and Pandas.
 Your task is to analyze data based on user queries by generating Python code and executing it via `execute_python_code`.
 Always use `df` as the DataFrame when handling CSV data.
 
-### Execution Rules:
-1. **Never return raw Python code to the user.**
-   - Generate and execute the code using `execute_python_code`.
-   - Only return the final structured result.
+### Guidelines:
+1. **Understand User Query:**
+   - Analyze the user query to identify the required operation.
+   - Generate Python code to perform the operation on the DataFrame (`df`).
+   - Ensure the code is error-free and provides the expected output.
 
 2. **Ensure results are structured and meaningful:**
    - If the output is a DataFrame, summarize key insights instead of returning raw data.
@@ -45,6 +45,10 @@ Always use `df` as the DataFrame when handling CSV data.
    - Avoid returning unnecessary technical details unless explicitly requested.
 """
 
+# ### Execution Rules:
+# 1. **Never return raw Python code to the user.**
+#    - Generate and execute the code using `execute_python_code`.
+#    - Only return the final structured result.
 agent = Agent(ollama_model,
               system_prompt=system_prompt,
               deps_type= CsvAgentSupportDependencies,
@@ -64,6 +68,7 @@ agent = Agent(ollama_model,
                   # CsvDataInvalidQueryResult
                   ],
               retries= 5,
+              result_retries= 5,
               model_settings= ModelSettings(
                   temperature= 0.2,  # High temperature (0.9) generates more creative responses
                   top_p = 0.9,       # Balanced diversity (0.9 keeps it stable)  

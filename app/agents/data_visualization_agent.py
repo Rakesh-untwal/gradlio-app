@@ -20,6 +20,7 @@ data_visualization_agent = Agent(
                                   ),
                                   deps_type=VisualizationAgentDeps,
                                   result_retries=5,
+                                  retries=5,
                                   tools=[
                                       Tool(execute_python_code,
                                             max_retries=5,
