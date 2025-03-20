@@ -19,7 +19,7 @@ def execute_python_code(ctx: RunContext[CsvAgentSupportDependencies], code: str)
         sys.stdout, sys.stderr = io.StringIO(), io.StringIO()
 
         try:
-            print(f"Executing Code:\n{code}\n")  # This will be captured
+            # print(f"Executing Code:\n{code}\n")  # This will be captured
             exec(code, exec_globals)
         finally:
             output = sys.stdout.getvalue().strip()
