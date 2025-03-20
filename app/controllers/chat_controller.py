@@ -55,7 +55,7 @@ class ChatController:
                         return "Unable to generate the image. Please try again."
                 else:
                     result = agent.run_sync(text,deps=CsvAgentSupportDependencies(csv_service= csv_service,csv_path=ChatController.file_path))
-                    # print(result.all_messages())
+                    print(result.all_messages())
             else:
                 return "Please ask anything to continue."
             

@@ -5,7 +5,7 @@ from pydantic_ai.tools import Tool,RunContext
 from app.models.ollama_model import ollama_model
 from app.dependencies.visulaization_agent_deps import VisualizationAgentDeps
 from app.tools.data_visualization_tool import execute_python_code
-
+from pydantic_ai.settings import ModelSettings
 
 data_visualization_agent = Agent(
                                   ollama_model,
@@ -23,7 +23,14 @@ data_visualization_agent = Agent(
                                   tools=[
                                       Tool(execute_python_code)
                                   ],
-                                  result_type=str
+                                  result_type=str,
+                                  model_settings= ModelSettings(
+                                                    temperature= 0.2,  # High temperature (0.9) generates more creative responses
+                                                    top_p = 0.9,       # Balanced diversity (0.9 keeps it stable)  
+                                                    parallel_tool_calls= True,
+                                                    frequency_penalty= 0.0,
+                                                    presence_penalty= 0.0
+                                                )
                         )
 
 # Function to Provide CSV Path to Agent
